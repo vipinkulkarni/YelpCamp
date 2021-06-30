@@ -1,0 +1,56 @@
+<% layout('layouts/boilerplate') %> 
+<script src="https://unpkg.com/infinite-scroll@4/dist/infinite-scroll.pkgd.js"></script>
+
+    <div id="clustermap"></div>
+    <h1>All Campgrounds</h1>
+    <h1><a href="/campgrounds/new">New Campground</a></h1>
+    <div class="container"
+     data-infinite-scroll='{ "path": "/campgrounds/index/{{#}}", "append": ".post", "history": false,"status": ".page-load-status" }'>
+        <article class="post">
+    <% for (let campground of campgrounds.slice(pagenum,pagenum+10)) { %>  
+       <div class="card mb-3">
+           <div class="row">
+               <div class="col-md-4">
+                   <% if(campground.images.length) {%> 
+                        <img src="<%= campground.images[0].url %> " alt="" class="img-fluid">
+                   <% } else {%>
+                        <img src="https://res.cloudinary.com/vipinkumark/image/upload/v1621575584/sample.jpg" alt="" class="img-fluid">
+                    <% } %>  
+               </div>
+               <div class="col-md-8">
+                   <div class="card-body">
+                       <h5 class="card-title"><%= campground.title %> </h5>          
+                       <p class="card-text d-none d-md-block"><%= campground.description %> </p>
+                       <p class="card-text">
+                           <small class="text-muted">
+                               <%= campground.location %> 
+                           </small>
+                       </p>
+                       <a href="/campgrounds/<%=campground._id%>" class="btn btn-primary">View</a>
+                   </div>
+               </div>
+           </div>
+       </div>
+    <% } %> 
+    </article>
+    </div> 
+
+    <div class="page-load-status">
+        <div class="infinite-scroll-request d-flex justify-content-center">
+            <button class="btn btn-primary btn-lg" type="button" disabled>
+                <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+                Loading...
+            </button>
+        </div>
+        <p class="infinite-scroll-last">End of content</p>
+        <p class="infinite-scroll-error">No more pages to load</p>
+      </div>
+      
+
+    <script>
+        const maptoken = '<%-process.env.MAPBOX_TOKEN%>';
+        const campgrounds = {
+            features: <%- JSON.stringify(campgrounds) %> 
+        };
+    </script>
+    <script src="/javascripts/clusterMap.js"></script>
